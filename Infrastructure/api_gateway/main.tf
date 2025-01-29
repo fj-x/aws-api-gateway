@@ -18,6 +18,26 @@ resource "aws_api_gateway_resource" "resource_one" {
     path_part = "path_one"
 }
 
+resource "aws_api_gateway_method" "method_one" {
+    rest_api_id = aws_api_gateway_rest_api.rest_api.id
+    resource_id = aws_api_gateway_resource.create_resource.id
+    http_method = "POST"
+    authorization = "NONE"
+    request_models = {
+        "application/json" = aws_api_gateway_model.post_model
+    }
+    request_validator_id = aws_api_gateway_request_validator.first_validator
+}
+
+resource "aws_api_gateway_integration" "first_integration" {
+    rest_api_id = aws_api_gateway_rest_api.rest_api.id
+    resource_id = aws_api_gateway_resource.resource_one.id
+    http_method = aws_api_gateway_method.method_one.http_method
+    integration_http_method = "POST"
+    type = "AWS_PROXY"
+    uri = var.lambda_one_function_arn
+}
+
 resource "aws_api_gateway_usage_plan" "usage_plan_one" {
     name = "plan_one"
     throttle_settings {
