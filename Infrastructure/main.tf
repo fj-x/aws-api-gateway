@@ -14,4 +14,5 @@ module "api_gateway" {
 
 module "lambda" {
     source = "./modules/lambda"
+    lambda_one_function_arn = module.api_gataway_execution_arn
 }
