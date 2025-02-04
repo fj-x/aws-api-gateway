@@ -29,5 +29,47 @@ resource "aws_iam_role" "lambda_exec" {
 resource "aws_iam_policy_attachments" "lambda_policy_attachments" {
     role = aws_iam_role.lambda_exec.name
     policy_arn = "arn:aws:iam::aws/policy/service-role/AWSLambdaBasicExecutionRole"
-} 
+}
+
+resource "aws_iam_role_policy" "api_gtw_policy" {
+    policy = <<EOF
+    {
+        "Version": "2012-10-17"
+        "Statement": [
+            "Effect": "Allow",
+            "Action": ["apigateway:*"],
+            "Resource": ["*"]
+        ]
+    }
+    EOF
+    role = aws_iam_role.lambda_exec.name
+}
+
+resource "aws_iam_role_policy" "sns_policy" {
+    policy = <<EOF
+    {
+        "Version": "2012-10-17"
+        "Statement": [
+            "Effect": "Allow",
+            "Action": ["sns:Publish"],
+            "Resource": ["*"]
+        ]
+    }
+    EOF
+    role = aws_iam_role.lambda_exec.name
+}
+
+resource "aws_iam_role_policy" "ssm_policy" {
+    policy = <<EOF
+    {
+        "Version": "2012-10-17"
+        "Statement": [
+            "Effect": "Allow",
+            "Action": ["ssm:GetParameters"],
+            "Resource": ["*"]
+        ]
+    }
+    EOF
+    role = aws_iam_role.lambda_exec.name
+}
 
